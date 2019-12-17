@@ -38,13 +38,32 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+exports.getNextUniqueId = (callback) => {
+  readCounter((err, id) => {
+    if(err) return callback(err, null)
+    writeCounter(id + 1, (err, counterString) => {
+      if(err) return callback(err, null)
+      callback(null, counterString)
+    })
+  })
+
 };
 
+// fs.readFile(counterFile, (err, data)=>{
+//   if(err) throw err;
+//   counter = parseInt(data.toString()) + 1;
+//   id = zeroPaddedNumber(counter);
+//   console.log(id)
+//   fs.writeFile(counterFile, '25', (err)=>{
+//     if(err) throw err;
+//     if(id){
+//       callback(null, id)
+//     }
+//     else callback('not valid id')
+//   })
+// });
+// console.log(fs.readFileSync(counterFile).toString(), 'this is just o make sure')
 
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
-
 exports.counterFile = path.join(__dirname, 'counter.txt');
